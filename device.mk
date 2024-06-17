@@ -43,6 +43,7 @@ include device/google/gs-common/misc_writer/misc_writer.mk
 include device/google/gs-common/gyotaku_app/gyotaku.mk
 include device/google/gs-common/bootctrl/bootctrl_aidl.mk
 include device/google/gs-common/betterbug/betterbug.mk
+include device/google/gs-common/fingerprint/fingerprint.mk
 
 include device/google/zuma/dumpstate/item.mk
 
@@ -360,12 +361,13 @@ PRODUCT_COPY_FILES += \
 	device/google/zuma/conf/init.zuma.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/hw/init.zuma.rc \
 	device/google/zuma/conf/init.persist.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/init.persist.rc
 
-ifeq (true,$(PRODUCT_16K_DEVELOPER_OPTION))
+ifeq (true,$(filter $(DEVICE_PAGE_AGNOSTIC) $(PRODUCT_16K_DEVELOPER_OPTION),true))
 PRODUCT_COPY_FILES += \
 	device/google/zuma/conf/init.efs.16k.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/init.efs.rc \
 	device/google/$(TARGET_BOARD_PLATFORM)/conf/fstab.efs.from_data:$(TARGET_COPY_OUT_VENDOR)/etc/fstab.efs.from_data \
 
 PRODUCT_PACKAGES += copy_efs_files_to_data
+PRODUCT_PACKAGES += fsck.f2fs.vendor
 else
 PRODUCT_COPY_FILES += \
 	device/google/zuma/conf/init.efs.4k.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/init.efs.rc
@@ -948,7 +950,9 @@ PRODUCT_PACKAGES += ShannonRcs
 # Exynos RIL and telephony
 # Multi SIM(DSDS)
 SIM_COUNT := 2
+$(call soong_config_set,sim,sim_count,$(SIM_COUNT))
 SUPPORT_MULTI_SIM := true
+
 # Support NR
 SUPPORT_NR := true
 # Support 5G on both stacks
