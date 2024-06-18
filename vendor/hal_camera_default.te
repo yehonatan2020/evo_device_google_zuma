@@ -43,10 +43,6 @@ userdebug_or_eng(`
   set_prop(hal_camera_default, vendor_camera_debug_prop);
 ')
 
-# For camera hal to talk with rlsservice
-allow hal_camera_default rls_service:service_manager find;
-binder_call(hal_camera_default, rlsservice)
-
 hal_client_domain(hal_camera_default, hal_graphics_allocator);
 hal_client_domain(hal_camera_default, hal_graphics_composer)
 hal_client_domain(hal_camera_default, hal_power);
@@ -68,9 +64,10 @@ allow hal_camera_default apex_info_file:file r_file_perms;
 # Allow camera HAL to query current device clock frequencies.
 allow hal_camera_default sysfs_devfreq_cur:file r_file_perms;
 
-# Allow camera HAL to read backlight of display
+# Allow camera HAL to read display info, including backlight
 allow hal_camera_default sysfs_leds:dir r_dir_perms;
 allow hal_camera_default sysfs_leds:file r_file_perms;
+allow hal_camera_default sysfs_display:file r_file_perms;
 
 # Allow camera HAL to query preferred camera frequencies from the radio HAL
 # extensions to avoid interference with cellular antennas.
@@ -79,10 +76,6 @@ binder_call(hal_camera_default, hal_radioext_default);
 
 # Allows camera HAL to access the hw_jpeg /dev/video12.
 allow hal_camera_default hw_jpg_device:chr_file rw_file_perms;
-
-# For camera hal to talk with rlsservice
-allow hal_camera_default rls_service:service_manager find;
-binder_call(hal_camera_default, rlsservice)
 
 # Allow access to always-on compute device node
 allow hal_camera_default aoc_device:chr_file rw_file_perms;
