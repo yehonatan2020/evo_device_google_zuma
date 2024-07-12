@@ -56,6 +56,7 @@ public class CopyEfsTest extends BaseHostJUnit4Test {
         testDumpF2FS("efs");
         testDumpF2FS("efs_backup");
         testDumpF2FS("modem_userdata");
+        testDumpF2FS("persist");
     }
 
     private void testDumpF2FS(String name) throws Exception {
