@@ -21,7 +21,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/sysinfo.h>
+#include <sys/wait.h>
 #include <time.h>
+#include <unistd.h>
 #include <vector>
 
 #include <android-base/file.h>
@@ -198,6 +200,7 @@ void dumpMaxFg() {
 
     const char *maxfg [][2] = {
             {"Power supply property maxfg", "/sys/class/power_supply/maxfg/uevent"},
+            {"maxfg registers", "/sys/class/power_supply/maxfg/registers_dump"},
             {"m5_state", "/sys/class/power_supply/maxfg/m5_model_state"},
             {"maxfg logbuffer", "/dev/logbuffer_maxfg"},
             {"maxfg_monitor logbuffer", "/dev/logbuffer_maxfg_monitor"},
@@ -206,6 +209,8 @@ void dumpMaxFg() {
     const char *maxfgFlip [][2] = {
             {"Power supply property maxfg_base", "/sys/class/power_supply/maxfg_base/uevent"},
             {"Power supply property maxfg_flip", "/sys/class/power_supply/maxfg_flip/uevent"},
+            {"maxfg_base registers", "/sys/class/power_supply/maxfg_base/registers_dump"},
+            {"maxfg_secondary registers", "/sys/class/power_supply/maxfg_secondary/registers_dump"},
             {"m5_state", "/sys/class/power_supply/maxfg_base/m5_model_state"},
             {"maxfg_base", "/dev/logbuffer_maxfg_base"},
             {"maxfg_flip", "/dev/logbuffer_maxfg_flip"},
@@ -260,53 +265,47 @@ void dumpLogBufferTcpm() {
 }
 
 void dumpTcpc() {
-    int ret;
-    const char* max77759TcpcHead = "TCPC";
-    const char* i2cSubDirMatch = "i2c-";
-    const char* directory = "/sys/devices/platform/10d60000.hsi2c/";
-    const char* max77759Tcpc [][2] {
-            {"registers:", "/i2c-max77759tcpc/registers"},
-            {"frs:", "/i2c-max77759tcpc/frs"},
-            {"auto_discharge:", "/i2c-max77759tcpc/auto_discharge"},
-            {"bcl2_enabled:", "/i2c-max77759tcpc/bcl2_enabled"},
-            {"cc_toggle_enable:", "/i2c-max77759tcpc/cc_toggle_enable"},
-            {"containment_detection:", "/i2c-max77759tcpc/containment_detection"},
-            {"containment_detection_status:", "/i2c-max77759tcpc/containment_detection_status"},
+    const char* max77759TcpcHead = "TCPC Device Attributes";
+    const char* directory = "/sys/class/typec/port0/device";
+    const char* max77759Tcpc [] {
+            "auto_discharge",
+            "bc12_enabled",
+            "cc_toggle_enable",
+            "contaminant_detection",
+            "contaminant_detection_status",
+            "frs",
+            "irq_hpd_count",
+            "non_compliant_reasons",
+            "sbu_pullup",
+            "update_sdp_enum_timeout",
+            "usb_limit_accessory_current",
+            "usb_limit_accessory_enable",
+            "usb_limit_sink_current",
+            "usb_limit_sink_enable",
+            "usb_limit_source_enable",
     };
 
-    std::vector<std::string> files;
     std::string content;
+    std::string tcpcRegistersPath(std::string(directory) + "/registers");
+
+    dumpFileContent("TCPC Registers", tcpcRegistersPath.c_str());
 
     printTitle(max77759TcpcHead);
 
-    ret = getFilesInDir(directory, &files);
-    if (ret < 0) {
-        for (auto &tcpcVal : max77759Tcpc)
-            printf("%s\n", tcpcVal[0]);
-        return;
+    for (auto& tcpcVal : max77759Tcpc) {
+        std::string filename = std::string(directory) + "/" + std::string(tcpcVal);
+        printf("%s: ", tcpcVal);
+        android::base::ReadFileToString(filename, &content);
+        if (!content.empty() && (content.back() == '\n' || content.back() == '\r'))
+            content.pop_back();
+        printf("%s\n", content.c_str());
     }
-
-    for (auto &file : files) {
-        for (auto &tcpcVal : max77759Tcpc) {
-            printf("%s ", tcpcVal[0]);
-            if (std::string::npos == std::string(file).find(i2cSubDirMatch)) {
-                continue;
-            }
-
-            std::string fileName = directory + file + "/" + std::string(tcpcVal[1]);
-
-            if (!android::base::ReadFileToString(fileName, &content)) {
-                continue;
-            }
-
-            printf("%s\n", content.c_str());
-        }
-    }
+    printf("\n");
 }
 
 void dumpPdEngine() {
     const char* pdEngine [][2] {
-            {"PD Engine", "/dev/logbuffer_usbpd"},
+            {"Logbuffer TCPC", "/dev/logbuffer_usbpd"},
             {"PPS-google_cpm", "/dev/logbuffer_cpm"},
             {"PPS-dc", "/dev/logbuffer_pca9468"},
     };
@@ -632,9 +631,26 @@ void dumpGvoteables() {
 
 void dumpMitigation() {
     const char *mitigationList [][2] {
+            {"LastmealCSV" , "/data/vendor/mitigation/lastmeal.csv"},
             {"Lastmeal" , "/data/vendor/mitigation/lastmeal.txt"},
             {"Thismeal" , "/data/vendor/mitigation/thismeal.txt"},
     };
+
+    /* parsing thismeal.bin */
+    int status;
+    int pid = fork();
+    if (pid < 0) {
+        printf("Fork failed for parsing thismeal.bin.\n");
+        exit(EXIT_FAILURE);
+    } else if (pid == 0) {
+        execl("/vendor/bin/hw/battery_mitigation", "battery_mitigation", "-d", nullptr);
+        exit(EXIT_SUCCESS);
+    }
+    waitpid(pid, &status, 0);
+
+    if (WIFSIGNALED(status)) {
+        printf("Failed to parse thismeal.bin.(killed by: %d)\n", WTERMSIG(status));
+    }
 
     for (auto &row : mitigationList) {
         if (!isValidFile(row[1]))
@@ -941,9 +957,21 @@ void dumpIrqDurationCounts() {
     }
 }
 
+void dumpCpuIdleHistogramStats() {
+    const char* cpuIdleHistogramTitle = "CPU Idle Histogram";
+    const char* cpuIdleHistogramFile = "/sys/kernel/metrics/cpuidle_histogram/"
+                                        "cpuidle_histogram";
+    const char* cpuClusterHistogramTitle = "CPU Cluster Histogram";
+    const char* cpuClusterHistogramFile = "/sys/kernel/metrics/"
+                                    "cpuidle_histogram/cpucluster_histogram";
+    dumpFileContent(cpuIdleHistogramTitle, cpuIdleHistogramFile);
+    dumpFileContent(cpuClusterHistogramTitle, cpuClusterHistogramFile);
+}
+
 int main() {
     dumpPowerStatsTimes();
     dumpAcpmStats();
+    dumpCpuIdleHistogramStats();
     dumpPowerSupplyStats();
     dumpMaxFg();
     dumpPowerSupplyDock();
