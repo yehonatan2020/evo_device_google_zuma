@@ -85,6 +85,7 @@ genfscon sysfs /devices/platform/19440000.drmdsim/19440000.drmdsim.0/refresh_rat
 genfscon sysfs /devices/platform/19440000.drmdsim/19440000.drmdsim.0/panel_model                          u:object_r:sysfs_display:s0
 genfscon sysfs /devices/platform/19440000.drmdsim/19440000.drmdsim.0/panel_pwr_vreg                       u:object_r:sysfs_display:s0
 genfscon sysfs /devices/platform/19440000.drmdsim/19440000.drmdsim.0/refresh_ctrl                         u:object_r:sysfs_display:s0
+genfscon sysfs /devices/platform/19440000.drmdsim/19440000.drmdsim.0/power_mode                           u:object_r:sysfs_display:s0
 genfscon sysfs /devices/platform/19470000.drmdecon/dqe0/atc                                               u:object_r:sysfs_display:s0
 genfscon sysfs /devices/platform/19470000.drmdecon/hibernation                                            u:object_r:sysfs_display:s0
 genfscon sysfs /module/drm/parameters/vblankoffdelay                                                      u:object_r:sysfs_display:s0
@@ -96,9 +97,22 @@ genfscon sysfs /devices/platform/110f0000.drmdp/drm-displayport/dp_hotplug_error
 genfscon sysfs /devices/platform/110f0000.drmdp/drm-displayport-stats/link_negotiation_failures           u:object_r:sysfs_display:s0
 genfscon sysfs /devices/platform/110f0000.drmdp/drm-displayport-stats/edid_read_failures                  u:object_r:sysfs_display:s0
 genfscon sysfs /devices/platform/110f0000.drmdp/drm-displayport-stats/dpcd_read_failures                  u:object_r:sysfs_display:s0
+genfscon sysfs /devices/platform/110f0000.drmdp/drm-displayport-stats/fec_dsc_not_supported               u:object_r:sysfs_display:s0
+genfscon sysfs /devices/platform/110f0000.drmdp/drm-displayport-stats/fec_dsc_supported                   u:object_r:sysfs_display:s0
 genfscon sysfs /devices/platform/110f0000.drmdp/drm-displayport-stats/edid_invalid_failures               u:object_r:sysfs_display:s0
 genfscon sysfs /devices/platform/110f0000.drmdp/drm-displayport-stats/sink_count_invalid_failures         u:object_r:sysfs_display:s0
 genfscon sysfs /devices/platform/110f0000.drmdp/drm-displayport-stats/link_unstable_failures              u:object_r:sysfs_display:s0
+genfscon sysfs /devices/platform/110f0000.drmdp/drm-displayport-stats/max_res_other                       u:object_r:sysfs_display:s0
+genfscon sysfs /devices/platform/110f0000.drmdp/drm-displayport-stats/max_res_1366_768                    u:object_r:sysfs_display:s0
+genfscon sysfs /devices/platform/110f0000.drmdp/drm-displayport-stats/max_res_1440_900                    u:object_r:sysfs_display:s0
+genfscon sysfs /devices/platform/110f0000.drmdp/drm-displayport-stats/max_res_1600_900                    u:object_r:sysfs_display:s0
+genfscon sysfs /devices/platform/110f0000.drmdp/drm-displayport-stats/max_res_1920_1080                   u:object_r:sysfs_display:s0
+genfscon sysfs /devices/platform/110f0000.drmdp/drm-displayport-stats/max_res_2560_1080                   u:object_r:sysfs_display:s0
+genfscon sysfs /devices/platform/110f0000.drmdp/drm-displayport-stats/max_res_2560_1440                   u:object_r:sysfs_display:s0
+genfscon sysfs /devices/platform/110f0000.drmdp/drm-displayport-stats/max_res_3440_1440                   u:object_r:sysfs_display:s0
+genfscon sysfs /devices/platform/110f0000.drmdp/drm-displayport-stats/max_res_3840_2160                   u:object_r:sysfs_display:s0
+genfscon sysfs /devices/platform/110f0000.drmdp/drm-displayport-stats/max_res_5120_2880                   u:object_r:sysfs_display:s0
+genfscon sysfs /devices/platform/110f0000.drmdp/drm-displayport-stats/max_res_7680_4320                   u:object_r:sysfs_display:s0
 genfscon sysfs /devices/platform/hdcp/hdcp2_success_count                                                 u:object_r:sysfs_display:s0
 genfscon sysfs /devices/platform/hdcp/hdcp2_fallback_count                                                u:object_r:sysfs_display:s0
 genfscon sysfs /devices/platform/hdcp/hdcp2_fail_count                                                    u:object_r:sysfs_display:s0
@@ -232,7 +246,7 @@ genfscon sysfs /devices/platform/10c90000.hsi2c/i2c-9/9-003c/wakeup/wakeup      
 genfscon sysfs /devices/platform/10c90000.hsi2c/i2c-9/9-003b/power_supply/wireless/wakeup                                 u:object_r:sysfs_wakeup:s0
 genfscon sysfs /devices/platform/10c90000.hsi2c/i2c-9/9-003b/wakeup/wakeup                                                u:object_r:sysfs_wakeup:s0
 genfscon sysfs /devices/platform/10cb0000.hsi2c/i2c-11/11-0025/power_supply/tcpm-source-psy-11-0025/wakeup                u:object_r:sysfs_wakeup:s0
-genfscon sysfs /devices/platform/10cb0000.hsi2c/i2c-11/11-0025/power_supply/tcpm-source-psy-max77759tcpc/wakeup           u:object_r:sysfs_wakeup:s0
+genfscon sysfs /devices/platform/10cb0000.hsi2c/i2c-11/11-0025/power_supply/tcpm-source-psy-i2c-max77759tcpc/wakeup       u:object_r:sysfs_wakeup:s0
 genfscon sysfs /devices/platform/10cb0000.hsi2c/i2c-11/11-0025/power_supply/usb/wakeup                                    u:object_r:sysfs_wakeup:s0
 genfscon sysfs /devices/platform/10cb0000.hsi2c/i2c-11/11-0025/wakeup/wakeup                                              u:object_r:sysfs_wakeup:s0
 genfscon sysfs /devices/platform/10cb0000.hsi2c/i2c-11/11-0036/power_supply/maxfg/wakeup                                  u:object_r:sysfs_wakeup:s0
@@ -242,6 +256,9 @@ genfscon sysfs /devices/platform/10cb0000.hsi2c/i2c-11/11-0057/power_supply/pca9
 genfscon sysfs /devices/platform/10cb0000.hsi2c/i2c-11/11-0069/power_supply/dc/wakeup                                     u:object_r:sysfs_wakeup:s0
 genfscon sysfs /devices/platform/10cb0000.hsi2c/i2c-11/11-0069/power_supply/main-charger/wakeup                           u:object_r:sysfs_wakeup:s0
 genfscon sysfs /devices/platform/10cb0000.hsi2c/i2c-11/11-0069/wakeup/wakeup                                              u:object_r:sysfs_wakeup:s0
+is_flag_enabled(RELEASE_USB_UDC_SYSFS_SELINUX_POLICY_ENABLED, `
+genfscon sysfs /devices/platform/11210000.usb/11210000.dwc3/udc/11210000.dwc3/state                                       u:object_r:sysfs_udc:s0
+')
 genfscon sysfs /devices/platform/11210000.usb/11210000.dwc3/wakeup                                                        u:object_r:sysfs_wakeup:s0
 genfscon sysfs /devices/platform/11210000.usb/11210000.dwc3/xhci-hcd-exynos.4.auto/wakeup                                 u:object_r:sysfs_wakeup:s0
 genfscon sysfs /devices/platform/11210000.usb/11210000.dwc3/xhci-hcd-exynos.4.auto/usb1                                   u:object_r:sysfs_wakeup:s0
@@ -275,6 +292,7 @@ genfscon sysfs /devices/virtual/wakeup/wakeup                                   
 genfscon sysfs /devices/platform/odm/odm:btbcm/wakeup                                                                     u:object_r:sysfs_wakeup:s0
 genfscon sysfs /devices/platform/19440000.drmdsim/19440000.drmdsim.0/wakeup/                                              u:object_r:sysfs_wakeup:s0
 genfscon sysfs /devices/platform/19450000.drmdsim/19450000.drmdsim.0/wakeup/                                              u:object_r:sysfs_wakeup:s0
+genfscon sysfs /devices/platform/110f0000.drmdp/wakeup                                                                    u:object_r:sysfs_wakeup:s0
 
 # Trusty
 genfscon sysfs /module/trusty_virtio/parameters/use_high_wq               u:object_r:sysfs_trusty:s0
@@ -327,3 +345,7 @@ genfscon sysfs /devices/platform/155d0000.serial/uart_dbg                    u:o
 
 # OTA
 genfscon sysfs /devices/platform/13200000.ufs/pixel/boot_lun_enabled           u:object_r:sysfs_ota:s0
+
+# CPU
+genfscon sysfs /kernel/metrics/cpuidle_histogram/cpuidle_histogram        u:object_r:sysfs_cpu:s0
+genfscon sysfs /kernel/metrics/cpuidle_histogram/cpucluster_histogram     u:object_r:sysfs_cpu:s0
